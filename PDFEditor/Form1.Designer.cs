@@ -39,6 +39,7 @@
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.dfsPdfText = new System.Windows.Forms.RichTextBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.rdUseFieldAlignment = new System.Windows.Forms.RadioButton();
             this.rdCenter = new System.Windows.Forms.RadioButton();
             this.rdRight = new System.Windows.Forms.RadioButton();
             this.rdLeft = new System.Windows.Forms.RadioButton();
@@ -47,7 +48,7 @@
             this.dfsArabicText = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.dfsFieldName = new System.Windows.Forms.TextBox();
-            this.rdUseFieldAlignment = new System.Windows.Forms.RadioButton();
+            this.btnRemoveunusedObjects = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage4.SuspendLayout();
@@ -141,6 +142,7 @@
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.btnRemoveunusedObjects);
             this.tabPage4.Controls.Add(this.rdUseFieldAlignment);
             this.tabPage4.Controls.Add(this.rdCenter);
             this.tabPage4.Controls.Add(this.rdRight);
@@ -157,6 +159,16 @@
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Arabic";
             this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // rdUseFieldAlignment
+            // 
+            this.rdUseFieldAlignment.AutoSize = true;
+            this.rdUseFieldAlignment.Location = new System.Drawing.Point(90, 123);
+            this.rdUseFieldAlignment.Name = "rdUseFieldAlignment";
+            this.rdUseFieldAlignment.Size = new System.Drawing.Size(99, 17);
+            this.rdUseFieldAlignment.TabIndex = 8;
+            this.rdUseFieldAlignment.Text = "Form Alignment";
+            this.rdUseFieldAlignment.UseVisualStyleBackColor = true;
             // 
             // rdCenter
             // 
@@ -234,15 +246,15 @@
             this.dfsFieldName.TabIndex = 0;
             this.dfsFieldName.Text = "fullnamearabic";
             // 
-            // rdUseFieldAlignment
+            // btnRemoveunusedObjects
             // 
-            this.rdUseFieldAlignment.AutoSize = true;
-            this.rdUseFieldAlignment.Location = new System.Drawing.Point(90, 123);
-            this.rdUseFieldAlignment.Name = "rdUseFieldAlignment";
-            this.rdUseFieldAlignment.Size = new System.Drawing.Size(99, 17);
-            this.rdUseFieldAlignment.TabIndex = 8;
-            this.rdUseFieldAlignment.Text = "Form Alignment";
-            this.rdUseFieldAlignment.UseVisualStyleBackColor = true;
+            this.btnRemoveunusedObjects.Location = new System.Drawing.Point(578, 22);
+            this.btnRemoveunusedObjects.Name = "btnRemoveunusedObjects";
+            this.btnRemoveunusedObjects.Size = new System.Drawing.Size(194, 23);
+            this.btnRemoveunusedObjects.TabIndex = 9;
+            this.btnRemoveunusedObjects.Text = "Remove unused objects";
+            this.btnRemoveunusedObjects.UseVisualStyleBackColor = true;
+            this.btnRemoveunusedObjects.Click += new System.EventHandler(this.btnRemoveunusedObjects_Click);
             // 
             // Form1
             // 
@@ -282,6 +294,7 @@
         private System.Windows.Forms.RichTextBox dfsPdfText;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.RadioButton rdUseFieldAlignment;
+        private System.Windows.Forms.Button btnRemoveunusedObjects;
     }
 }
 

@@ -162,5 +162,56 @@ namespace PDFEditor
             output[4] = positions.position.Top;
             return output;
         }
+
+        private void btnRemoveunusedObjects_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _reader = new PdfReader(fileName);
+                var outfileName = fileName.Replace(".pdf", DateTime.Now.Ticks.ToString() + ".pdf");
+                _pdfStamper = new PdfStamper(_reader, new FileStream(outfileName, FileMode.Create));
+
+
+                int numPages = _reader.NumberOfPages;
+                int pgNumber = 1;
+
+                PdfDictionary page = _reader.GetPageN(pgNumber);
+                PdfArray contentarray = page.GetAsArray(PdfName.CONTENTS);
+                PRStream stream;
+                string content;
+                if (contentarray != null)
+                {
+                    //Loop through content
+                    for (int j = 0; j < contentarray.Size; j++)
+                    {
+                        stream = (PRStream)contentarray.GetAsStream(j);
+                        content = Encoding.ASCII.GetString(PdfReader.GetStreamBytes(stream));
+                        string[] tokens = content.Split('\n');
+                        for (int i = 0; i < tokens.Length; i++)
+                        {
+                            if (tokens[i].Contains("/QuickPDF"))
+                            {
+                                tokens[i] = string.Empty;
+                            }
+                        }
+
+                        string outstr = string.Join("\n", tokens.Select(p => p).ToArray());
+                        byte[] outbytes = Encoding.ASCII.GetBytes(outstr);
+                        stream.SetData(outbytes);
+                    }
+                }
+
+
+
+
+                _pdfStamper.Close();
+                Process.Start(outfileName);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.ReadLine();
+            }
+        }
     }
 }
