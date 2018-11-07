@@ -18,6 +18,7 @@ namespace PDFEditor
 {
     public partial class Form1 : Form
     {
+        //https://simpledotnetsolutions.wordpress.com/2012/04/08/itextsharp-few-c-examples/
         PdfReader _reader;
         string fileName;
         public Form1()
@@ -128,7 +129,14 @@ namespace PDFEditor
 
                 ct.SetText(new Phrase(fieldValue, f));
                 ct.Go();
-                overContent.Rectangle(fieldPosition.Left, fieldPosition.Bottom - fieldPosition.Height / 2, fieldPosition.Right, fieldPosition.Top - fieldPosition.Height / 2);
+
+                //uncomment to draw rectangle
+                //var rect = new iTextSharp.text.Rectangle(fieldPosition.Left, fieldPosition.Bottom - fieldPosition.Height / 2, fieldPosition.Right, fieldPosition.Top - fieldPosition.Height / 2);
+                //rect.Border = iTextSharp.text.Rectangle.LEFT_BORDER | iTextSharp.text.Rectangle.RIGHT_BORDER;
+                //rect.BorderWidth = 5;
+                //rect.BorderColor = new BaseColor(0, 0, 0);
+
+                //overContent.Rectangle(rect);
                 _pdfStamper.Close();
                 Process.Start(outfileName);
             }
