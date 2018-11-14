@@ -33,12 +33,15 @@
             this.ltnSelectPDF = new System.Windows.Forms.LinkLabel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.tsMessage = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.dfsPdfText = new System.Windows.Forms.RichTextBox();
             this.tvDOM = new System.Windows.Forms.TreeView();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-            this.dfsPdfText = new System.Windows.Forms.RichTextBox();
+            this.picImage = new System.Windows.Forms.PictureBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.btnRemoveunusedObjects = new System.Windows.Forms.Button();
             this.rdUseFieldAlignment = new System.Windows.Forms.RadioButton();
             this.rdCenter = new System.Windows.Forms.RadioButton();
             this.rdRight = new System.Windows.Forms.RadioButton();
@@ -48,16 +51,23 @@
             this.dfsArabicText = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.dfsFieldName = new System.Windows.Forms.TextBox();
-            this.btnRemoveunusedObjects = new System.Windows.Forms.Button();
+            this.dffOpenInputInAdobe = new System.Windows.Forms.CheckBox();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.btnRemoveImage = new System.Windows.Forms.Button();
+            this.dffOpenOutputInAdobe = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picImage)).BeginInit();
             this.tabPage4.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // ltnSelectPDF
             // 
             this.ltnSelectPDF.AutoSize = true;
-            this.ltnSelectPDF.Location = new System.Drawing.Point(6, 13);
+            this.ltnSelectPDF.Location = new System.Drawing.Point(125, 14);
             this.ltnSelectPDF.Name = "ltnSelectPDF";
             this.ltnSelectPDF.Size = new System.Drawing.Size(77, 13);
             this.ltnSelectPDF.TabIndex = 0;
@@ -78,10 +88,9 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.label4);
-            this.tabPage1.Controls.Add(this.label3);
-            this.tabPage1.Controls.Add(this.tvDOM);
-            this.tabPage1.Controls.Add(this.dfsPdfText);
+            this.tabPage1.Controls.Add(this.dffOpenInputInAdobe);
+            this.tabPage1.Controls.Add(this.statusStrip1);
+            this.tabPage1.Controls.Add(this.tableLayoutPanel1);
             this.tabPage1.Controls.Add(this.ltnSelectPDF);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
@@ -91,37 +100,65 @@
             this.tabPage1.Text = "PDF File";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // label4
+            // statusStrip1
             // 
-            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(249, 22);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(44, 13);
-            this.label4.TabIndex = 7;
-            this.label4.Text = "Objects";
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsMessage});
+            this.statusStrip1.Location = new System.Drawing.Point(3, 399);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(786, 22);
+            this.statusStrip1.TabIndex = 9;
+            this.statusStrip1.Text = "statusStrip1";
             // 
-            // label3
+            // tsMessage
             // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(214, 20);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(29, 13);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "Text";
+            this.tsMessage.Name = "tsMessage";
+            this.tsMessage.Size = new System.Drawing.Size(771, 17);
+            this.tsMessage.Spring = true;
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.dfsPdfText, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.tvDOM, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.picImage, 1, 1);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 38);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 2;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(783, 383);
+            this.tableLayoutPanel1.TabIndex = 8;
+            // 
+            // dfsPdfText
+            // 
+            this.dfsPdfText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dfsPdfText.Location = new System.Drawing.Point(3, 3);
+            this.dfsPdfText.Name = "dfsPdfText";
+            this.dfsPdfText.Size = new System.Drawing.Size(385, 185);
+            this.dfsPdfText.TabIndex = 4;
+            this.dfsPdfText.Text = "";
             // 
             // tvDOM
             // 
-            this.tvDOM.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tvDOM.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tvDOM.ImageIndex = 0;
             this.tvDOM.ImageList = this.imageList1;
-            this.tvDOM.Location = new System.Drawing.Point(249, 38);
+            this.tvDOM.Location = new System.Drawing.Point(3, 194);
             this.tvDOM.Name = "tvDOM";
             this.tvDOM.SelectedImageIndex = 0;
-            this.tvDOM.Size = new System.Drawing.Size(537, 378);
+            this.tvDOM.Size = new System.Drawing.Size(385, 186);
             this.tvDOM.TabIndex = 5;
+            this.tvDOM.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvDOM_AfterSelect);
             // 
             // imageList1
             // 
@@ -129,16 +166,14 @@
             this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
             this.imageList1.Images.SetKeyName(0, "White.png");
             // 
-            // dfsPdfText
+            // picImage
             // 
-            this.dfsPdfText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dfsPdfText.Location = new System.Drawing.Point(3, 38);
-            this.dfsPdfText.Name = "dfsPdfText";
-            this.dfsPdfText.Size = new System.Drawing.Size(240, 378);
-            this.dfsPdfText.TabIndex = 4;
-            this.dfsPdfText.Text = "";
+            this.picImage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.picImage.Location = new System.Drawing.Point(394, 194);
+            this.picImage.Name = "picImage";
+            this.picImage.Size = new System.Drawing.Size(386, 186);
+            this.picImage.TabIndex = 6;
+            this.picImage.TabStop = false;
             // 
             // tabPage4
             // 
@@ -159,6 +194,16 @@
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Arabic";
             this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // btnRemoveunusedObjects
+            // 
+            this.btnRemoveunusedObjects.Location = new System.Drawing.Point(578, 22);
+            this.btnRemoveunusedObjects.Name = "btnRemoveunusedObjects";
+            this.btnRemoveunusedObjects.Size = new System.Drawing.Size(194, 23);
+            this.btnRemoveunusedObjects.TabIndex = 9;
+            this.btnRemoveunusedObjects.Text = "Remove unused objects";
+            this.btnRemoveunusedObjects.UseVisualStyleBackColor = true;
+            this.btnRemoveunusedObjects.Click += new System.EventHandler(this.btnRemoveunusedObjects_Click);
             // 
             // rdUseFieldAlignment
             // 
@@ -246,15 +291,51 @@
             this.dfsFieldName.TabIndex = 0;
             this.dfsFieldName.Text = "fullnamearabic";
             // 
-            // btnRemoveunusedObjects
+            // dffOpenInputInAdobe
             // 
-            this.btnRemoveunusedObjects.Location = new System.Drawing.Point(578, 22);
-            this.btnRemoveunusedObjects.Name = "btnRemoveunusedObjects";
-            this.btnRemoveunusedObjects.Size = new System.Drawing.Size(194, 23);
-            this.btnRemoveunusedObjects.TabIndex = 9;
-            this.btnRemoveunusedObjects.Text = "Remove unused objects";
-            this.btnRemoveunusedObjects.UseVisualStyleBackColor = true;
-            this.btnRemoveunusedObjects.Click += new System.EventHandler(this.btnRemoveunusedObjects_Click);
+            this.dffOpenInputInAdobe.AutoSize = true;
+            this.dffOpenInputInAdobe.Location = new System.Drawing.Point(8, 13);
+            this.dffOpenInputInAdobe.Name = "dffOpenInputInAdobe";
+            this.dffOpenInputInAdobe.Size = new System.Drawing.Size(97, 17);
+            this.dffOpenInputInAdobe.TabIndex = 10;
+            this.dffOpenInputInAdobe.Text = "Show in Adobe";
+            this.dffOpenInputInAdobe.UseVisualStyleBackColor = true;
+            // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.ColumnCount = 2;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.Controls.Add(this.btnRemoveImage, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.dffOpenOutputInAdobe, 1, 0);
+            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(394, 3);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 2;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(386, 185);
+            this.tableLayoutPanel2.TabIndex = 3;
+            // 
+            // btnRemoveImage
+            // 
+            this.btnRemoveImage.Location = new System.Drawing.Point(3, 3);
+            this.btnRemoveImage.Name = "btnRemoveImage";
+            this.btnRemoveImage.Size = new System.Drawing.Size(161, 23);
+            this.btnRemoveImage.TabIndex = 8;
+            this.btnRemoveImage.Text = "Remove Image";
+            this.btnRemoveImage.UseVisualStyleBackColor = true;
+            this.btnRemoveImage.Click += new System.EventHandler(this.btnRemoveImage_Click_1);
+            // 
+            // dffOpenOutputInAdobe
+            // 
+            this.dffOpenOutputInAdobe.AutoSize = true;
+            this.dffOpenOutputInAdobe.Location = new System.Drawing.Point(196, 3);
+            this.dffOpenOutputInAdobe.Name = "dffOpenOutputInAdobe";
+            this.dffOpenOutputInAdobe.Size = new System.Drawing.Size(97, 17);
+            this.dffOpenOutputInAdobe.TabIndex = 11;
+            this.dffOpenOutputInAdobe.Text = "Show in Adobe";
+            this.dffOpenOutputInAdobe.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -268,8 +349,14 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.picImage)).EndInit();
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -288,13 +375,19 @@
         private System.Windows.Forms.TextBox dfsArabicText;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox dfsFieldName;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TreeView tvDOM;
         private System.Windows.Forms.RichTextBox dfsPdfText;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.RadioButton rdUseFieldAlignment;
         private System.Windows.Forms.Button btnRemoveunusedObjects;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.PictureBox picImage;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel tsMessage;
+        private System.Windows.Forms.CheckBox dffOpenInputInAdobe;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.Button btnRemoveImage;
+        private System.Windows.Forms.CheckBox dffOpenOutputInAdobe;
     }
 }
 
