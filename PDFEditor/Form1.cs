@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -39,7 +42,7 @@ namespace PDFEditor
                 for (var i = 1; i <= _reader.NumberOfPages; i++)
                     sb.Append(PdfTextExtractor.GetTextFromPage(_reader, i));
                 dfsPdfText.Text = sb.ToString();
-
+                tsMessage.Text = "PDF Size = " + _reader.FileLength;
                 ShowObjects();
                 if (dffOpenInputInAdobe.Checked)
                 Process.Start(ofd.FileName);
@@ -48,6 +51,9 @@ namespace PDFEditor
 
         private void ShowObjects()
         {
+            tvDOM.Nodes.Clear();
+            lstSelectedImages.Items.Clear();
+
             for (var i = 1; i <= _reader.XrefSize; i++)
             {
                 var obj = _reader.GetPdfObject(i);
@@ -97,7 +103,7 @@ namespace PDFEditor
                 var ARIALUNI_TFF =
                     Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), "trado.TTF");
                 var bf = BaseFont.CreateFont(ARIALUNI_TFF, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-                var f = new Font(bf);
+                var f = new iTextSharp.text.Font(bf);
 
                 var overContent = _pdfStamper.GetOverContent(1); //1 means page 1
                 var fieldPosition = pdfFormFields.GetFieldPositions(fieldName)[0].position;
@@ -194,7 +200,6 @@ namespace PDFEditor
         private void tvDOM_AfterSelect(object sender, TreeViewEventArgs e)
         {
             var obj = e.Node.Tag as PdfObject;
-
             if (obj != null && obj.IsStream())
             {
                 var stream = (PRStream) obj;
@@ -212,13 +217,16 @@ namespace PDFEditor
                 try
                 {
                     var pdfImage = new PdfImageObject(stream);
+                    picImage.Image = null;
                     picImage.Image = pdfImage.GetDrawingImage();
+                    tsMessage.Text = "Image Size = " +  stream.Length;
                 }
                 catch (Exception ex)
                 {
                     tsMessage.Text = ex.Message;
                 }
             }
+
         }
 
         private string GetStreamType(PdfObject obj)
@@ -275,20 +283,25 @@ namespace PDFEditor
 
         private void btnRemoveImage_Click_1(object sender, EventArgs e)
         {
+            var sourceFolder = Path.GetDirectoryName(fileName);
+            if (!Directory.Exists(sourceFolder + "\\Output"))
+                Directory.CreateDirectory(sourceFolder + "\\Output");
 
-            var obj1 = tvDOM.SelectedNode.Tag as PdfObject;
+            Stream white = File.OpenRead("White.png");
+            iTextSharp.text.Image whiteImg = iTextSharp.text.Image.GetInstance(white);
+
+            var outfileName = sourceFolder + "\\Output\\" + Path.GetFileName(fileName);
+            var outputStream = new FileStream(outfileName, FileMode.Create);
+            _pdfStamper = new PdfStamper(_reader, outputStream);
+            PdfWriter writer = _pdfStamper.Writer;
+
+
+
+            //var obj1 = tvDOM.SelectedNode.Tag as PdfObject;
 
 
             try
             {
-                var sourceFolder = Path.GetDirectoryName(fileName);
-                if (!Directory.Exists(sourceFolder + "\\Output"))
-                    Directory.CreateDirectory(sourceFolder + "\\Output");
-
-                var outfileName = sourceFolder + "\\Output\\" + Path.GetFileName(fileName);
-                _pdfStamper = new PdfStamper(_reader, new FileStream(outfileName, FileMode.Create));
-                PdfWriter writer = _pdfStamper.Writer;
-                //Image img = Image.GetInstance("image.png");
                 PdfDictionary pg = _reader.GetPageN(1);
                 PdfDictionary res =
                   (PdfDictionary)PdfReader.GetPdfObject(pg.Get(PdfName.RESOURCES));
@@ -306,13 +319,10 @@ namespace PDFEditor
                               (PdfName)PdfReader.GetPdfObject(tg.Get(PdfName.SUBTYPE));
                             if (PdfName.IMAGE.Equals(type))
                             {
-                                PdfReader.KillIndirect(obj);
-                                Stream white = File.OpenRead("White.png");
-                                iTextSharp.text.Image img2 = iTextSharp.text.Image.GetInstance(white);
-
-
-                                writer.AddDirectImageSimple(img2, (PRIndirectReference)obj);
-                                break;
+                                
+                                //PdfReader.KillIndirect(obj);
+                                writer.AddDirectImageSimple(whiteImg, (PRIndirectReference)obj);
+                                //break;
                             }
                         }
                     }
@@ -330,6 +340,105 @@ namespace PDFEditor
             }
 
 
+        }
+
+        private void btnRemoveObject_Click(object sender, EventArgs e)
+        {
+            foreach (var item in lstSelectedImages.SelectedItems)
+            {
+                var obj = item as PdfObject;
+                if (obj != null && obj.IsStream())
+                {
+                    var stream = (PRStream)obj;
+                    byte[] b;
+                    try
+                    {
+                        b = PdfReader.GetStreamBytes(stream);
+                    }
+                    catch (Exception ex1)
+                    {
+                        b = PdfReader.GetStreamBytesRaw(stream);
+                    }
+
+                    var bytes = b;
+                    try
+                    {
+                        var pdfImage = new PdfImageObject(stream);
+                        picImage.Image = pdfImage.GetDrawingImage();
+                        picImage.Image.Save(Path.GetDirectoryName(fileName) + "\\output\\" + DateTime.Now.Ticks.ToString() + "." + pdfImage.GetFileType());
+                        PdfImage image = new PdfImage(MakeBlankImg(), "", null);
+                        ReplaceStream(stream, image);
+                    }
+                    catch (Exception ex)
+                    {
+                        tsMessage.Text = ex.Message;
+                    }
+                }
+            }
+
+            SaveReaderToOutput();
+        }
+
+        public static iTextSharp.text.Image MakeBlankImg()
+        {
+            byte[] array;
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                //var drawingImage = image.GetDrawingImage();
+                using (Bitmap newBi = new Bitmap(1, 1))
+                {
+
+                    using (Graphics g = Graphics.FromImage(newBi))
+                    {
+                        g.Clear(Color.White);
+                        g.Flush();
+                    }
+                    newBi.Save(ms, ImageFormat.Jpeg);
+                }
+
+                array = ms.ToArray();
+            }
+
+            return iTextSharp.text.Image.GetInstance(array);
+        }
+
+        public static void ReplaceStream(PRStream orig, PdfStream stream)
+        {
+            orig.Clear();
+            MemoryStream ms = new MemoryStream();
+            stream.WriteContent(ms);
+            orig.SetData(ms.ToArray(), false);
+
+            Console.WriteLine("Iterating keys");
+
+            foreach (System.Collections.Generic.KeyValuePair<PdfName, PdfObject> keyValuePair in stream)
+            {
+
+                orig.Put(keyValuePair.Key, stream.Get(keyValuePair.Key));
+            }
+        }
+        private void SaveReaderToOutput()
+        {
+            var sourceFolder = Path.GetDirectoryName(fileName);
+            if (!Directory.Exists(sourceFolder + "\\Output"))
+                Directory.CreateDirectory(sourceFolder + "\\Output");
+
+            var outfileName = sourceFolder + "\\Output\\" + Path.GetFileName(fileName);
+
+
+            using (FileStream fs = new FileStream(outfileName, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                using (PdfStamper stamper = new PdfStamper(_reader, fs))
+                {
+
+                }
+            }
+        }
+
+        private void tvDOM_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            lstSelectedImages.Items.Add(e.Node.Tag);
         }
     }
 }

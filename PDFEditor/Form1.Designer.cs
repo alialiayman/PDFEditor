@@ -33,9 +33,13 @@
             this.ltnSelectPDF = new System.Windows.Forms.LinkLabel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.dffOpenInputInAdobe = new System.Windows.Forms.CheckBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tsMessage = new System.Windows.Forms.ToolStripStatusLabel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.btnRemoveImage = new System.Windows.Forms.Button();
+            this.dffOpenOutputInAdobe = new System.Windows.Forms.CheckBox();
             this.dfsPdfText = new System.Windows.Forms.RichTextBox();
             this.tvDOM = new System.Windows.Forms.TreeView();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
@@ -51,17 +55,15 @@
             this.dfsArabicText = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.dfsFieldName = new System.Windows.Forms.TextBox();
-            this.dffOpenInputInAdobe = new System.Windows.Forms.CheckBox();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.btnRemoveImage = new System.Windows.Forms.Button();
-            this.dffOpenOutputInAdobe = new System.Windows.Forms.CheckBox();
+            this.btnRemoveObject = new System.Windows.Forms.Button();
+            this.lstSelectedImages = new System.Windows.Forms.ListBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picImage)).BeginInit();
             this.tabPage4.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // ltnSelectPDF
@@ -100,6 +102,16 @@
             this.tabPage1.Text = "PDF File";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // dffOpenInputInAdobe
+            // 
+            this.dffOpenInputInAdobe.AutoSize = true;
+            this.dffOpenInputInAdobe.Location = new System.Drawing.Point(8, 13);
+            this.dffOpenInputInAdobe.Name = "dffOpenInputInAdobe";
+            this.dffOpenInputInAdobe.Size = new System.Drawing.Size(97, 17);
+            this.dffOpenInputInAdobe.TabIndex = 10;
+            this.dffOpenInputInAdobe.Text = "Show in Adobe";
+            this.dffOpenInputInAdobe.UseVisualStyleBackColor = true;
+            // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -137,6 +149,44 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(783, 383);
             this.tableLayoutPanel1.TabIndex = 8;
             // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.ColumnCount = 2;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.Controls.Add(this.btnRemoveObject, 0, 1);
+            this.tableLayoutPanel2.Controls.Add(this.btnRemoveImage, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.dffOpenOutputInAdobe, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.lstSelectedImages, 1, 1);
+            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(394, 3);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 2;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(386, 185);
+            this.tableLayoutPanel2.TabIndex = 3;
+            // 
+            // btnRemoveImage
+            // 
+            this.btnRemoveImage.Location = new System.Drawing.Point(3, 3);
+            this.btnRemoveImage.Name = "btnRemoveImage";
+            this.btnRemoveImage.Size = new System.Drawing.Size(161, 23);
+            this.btnRemoveImage.TabIndex = 8;
+            this.btnRemoveImage.Text = "Remove All Images";
+            this.btnRemoveImage.UseVisualStyleBackColor = true;
+            this.btnRemoveImage.Click += new System.EventHandler(this.btnRemoveImage_Click_1);
+            // 
+            // dffOpenOutputInAdobe
+            // 
+            this.dffOpenOutputInAdobe.AutoSize = true;
+            this.dffOpenOutputInAdobe.Location = new System.Drawing.Point(196, 3);
+            this.dffOpenOutputInAdobe.Name = "dffOpenOutputInAdobe";
+            this.dffOpenOutputInAdobe.Size = new System.Drawing.Size(97, 17);
+            this.dffOpenOutputInAdobe.TabIndex = 11;
+            this.dffOpenOutputInAdobe.Text = "Show in Adobe";
+            this.dffOpenOutputInAdobe.UseVisualStyleBackColor = true;
+            // 
             // dfsPdfText
             // 
             this.dfsPdfText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -159,6 +209,7 @@
             this.tvDOM.Size = new System.Drawing.Size(385, 186);
             this.tvDOM.TabIndex = 5;
             this.tvDOM.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvDOM_AfterSelect);
+            this.tvDOM.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvDOM_NodeMouseDoubleClick);
             // 
             // imageList1
             // 
@@ -291,51 +342,25 @@
             this.dfsFieldName.TabIndex = 0;
             this.dfsFieldName.Text = "fullnamearabic";
             // 
-            // dffOpenInputInAdobe
+            // btnRemoveObject
             // 
-            this.dffOpenInputInAdobe.AutoSize = true;
-            this.dffOpenInputInAdobe.Location = new System.Drawing.Point(8, 13);
-            this.dffOpenInputInAdobe.Name = "dffOpenInputInAdobe";
-            this.dffOpenInputInAdobe.Size = new System.Drawing.Size(97, 17);
-            this.dffOpenInputInAdobe.TabIndex = 10;
-            this.dffOpenInputInAdobe.Text = "Show in Adobe";
-            this.dffOpenInputInAdobe.UseVisualStyleBackColor = true;
+            this.btnRemoveObject.Location = new System.Drawing.Point(3, 95);
+            this.btnRemoveObject.Name = "btnRemoveObject";
+            this.btnRemoveObject.Size = new System.Drawing.Size(161, 23);
+            this.btnRemoveObject.TabIndex = 12;
+            this.btnRemoveObject.Text = "Remove Selected Images (Sequencially)";
+            this.btnRemoveObject.UseVisualStyleBackColor = true;
+            this.btnRemoveObject.Click += new System.EventHandler(this.btnRemoveObject_Click);
             // 
-            // tableLayoutPanel2
+            // lstSelectedImages
             // 
-            this.tableLayoutPanel2.ColumnCount = 2;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Controls.Add(this.btnRemoveImage, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.dffOpenOutputInAdobe, 1, 0);
-            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(394, 3);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 2;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(386, 185);
-            this.tableLayoutPanel2.TabIndex = 3;
-            // 
-            // btnRemoveImage
-            // 
-            this.btnRemoveImage.Location = new System.Drawing.Point(3, 3);
-            this.btnRemoveImage.Name = "btnRemoveImage";
-            this.btnRemoveImage.Size = new System.Drawing.Size(161, 23);
-            this.btnRemoveImage.TabIndex = 8;
-            this.btnRemoveImage.Text = "Remove Image";
-            this.btnRemoveImage.UseVisualStyleBackColor = true;
-            this.btnRemoveImage.Click += new System.EventHandler(this.btnRemoveImage_Click_1);
-            // 
-            // dffOpenOutputInAdobe
-            // 
-            this.dffOpenOutputInAdobe.AutoSize = true;
-            this.dffOpenOutputInAdobe.Location = new System.Drawing.Point(196, 3);
-            this.dffOpenOutputInAdobe.Name = "dffOpenOutputInAdobe";
-            this.dffOpenOutputInAdobe.Size = new System.Drawing.Size(97, 17);
-            this.dffOpenOutputInAdobe.TabIndex = 11;
-            this.dffOpenOutputInAdobe.Text = "Show in Adobe";
-            this.dffOpenOutputInAdobe.UseVisualStyleBackColor = true;
+            this.lstSelectedImages.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstSelectedImages.FormattingEnabled = true;
+            this.lstSelectedImages.Location = new System.Drawing.Point(196, 95);
+            this.lstSelectedImages.Name = "lstSelectedImages";
+            this.lstSelectedImages.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+            this.lstSelectedImages.Size = new System.Drawing.Size(187, 87);
+            this.lstSelectedImages.TabIndex = 13;
             // 
             // Form1
             // 
@@ -352,11 +377,11 @@
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picImage)).EndInit();
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -388,6 +413,8 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Button btnRemoveImage;
         private System.Windows.Forms.CheckBox dffOpenOutputInAdobe;
+        private System.Windows.Forms.Button btnRemoveObject;
+        private System.Windows.Forms.ListBox lstSelectedImages;
     }
 }
 
