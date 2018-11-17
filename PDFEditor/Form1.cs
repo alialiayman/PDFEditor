@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -37,6 +38,7 @@ namespace PDFEditor
                 ofd.ShowDialog();
                 if (string.IsNullOrEmpty(ofd.FileName)) return;
                 fileName = ofd.FileName;
+                ltnSelectPDF.Text = fileName;
                 _reader = new PdfReader(ofd.FileName);
                 var sb = new StringBuilder();
                 for (var i = 1; i <= _reader.NumberOfPages; i++)
@@ -53,23 +55,25 @@ namespace PDFEditor
         {
             tvDOM.Nodes.Clear();
             lstSelectedImages.Items.Clear();
-
             for (var i = 1; i <= _reader.XrefSize; i++)
             {
                 var obj = _reader.GetPdfObject(i);
                 if (obj == null) continue;
                 var node = PrintObject(tvDOM.Nodes, obj, i.ToString());
-                node.Tag = obj;
             }
         }
 
         private TreeNode PrintObject(TreeNodeCollection tvDomNodes, PdfObject obj, string objectNumber)
         {
             var streamType = GetStreamType(obj);
-            var node = tvDomNodes.Add($"{objectNumber} - Type {obj.GetType()} {streamType}");
+            string isIndirect = "Indirect";
+            if (!obj.IsIndirect())
+                isIndirect = "Direct";
+
+            var node = tvDomNodes.Add($"{objectNumber} - {obj.GetType().Name} {streamType} {isIndirect}");
             node.Tag = obj;
-            if (streamType.StartsWith("Image"))
-                node.BackColor = System.Drawing.Color.Olive;
+            if (streamType.Contains("Image"))
+                node.BackColor = Color.Olive;
             if (obj.IsDictionary())
             {
                 var dict = obj as PdfDictionary;
@@ -77,7 +81,6 @@ namespace PDFEditor
                 {
                     var dictObj = dict.GetDirectObject(dictKey);
                     var newNode = PrintObject(node.Nodes, dictObj, dictObj.ToString());
-                    //return node.Nodes[0];
                 }
             }
                 return node;
@@ -214,12 +217,15 @@ namespace PDFEditor
                 }
 
                 var bytes = b;
+
                 try
                 {
-                    var pdfImage = new PdfImageObject(stream);
-                    picImage.Image = null;
-                    picImage.Image = pdfImage.GetDrawingImage();
-                    tsMessage.Text = "Image Size = " +  stream.Length;
+                    if (!TryToReadImage(stream))
+                    {
+                        var contentAsString = Encoding.UTF8.GetString(PdfReader.GetStreamBytes(stream));
+                        dfsPdfText.Text = contentAsString;
+                        //stream.SetData(new byte[0]);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -228,6 +234,23 @@ namespace PDFEditor
             }
 
         }
+
+        private bool TryToReadImage(PRStream stream)
+        {
+            try
+            {
+                var pdfImage = new PdfImageObject(stream);
+                picImage.Image = null;
+                picImage.Image = pdfImage.GetDrawingImage();
+                tsMessage.Text = "Image Size = " + stream.Length;
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
 
         private string GetStreamType(PdfObject obj)
         {
@@ -239,44 +262,23 @@ namespace PDFEditor
                 try
                 {
                     var pdfImage = new PdfImageObject(stream);
-                    if (pdfImage != null) return $"Image {pdfImage.GetFileType()}";
+                    var drawingImage = pdfImage.GetDrawingImage();
+                    if (pdfImage != null) return $"{drawingImage.Width}x{drawingImage.Height} {pdfImage.GetFileType()} Image";
                 }
                 catch (Exception ex)
                 {
-                    tsMessage.Text = ex.Message;
-                    return "not image";
+                    var sb = new StringBuilder();
+                    foreach (var item in stream.Keys)
+                    {
+                        var streamKeyValue = stream.Get(item);
+                        sb.Append(item + ":" + streamKeyValue + "  ");
+                    }
+                    return sb.ToString();
                 }
             }
-            else if (obj.IsArray())
-            {
-                return "arrary";
-            }
-            else if (obj.IsBoolean())
-            {
-                return "bool";
-            }
-            else if (obj.IsDictionary())
-            {
-                return "dictionary";
-            }
-            else if (obj.IsIndirect())
-            {
-                return "indirect";
-            }
-            else if (obj.IsName())
-            {
-                return "name";
-            }
-            else if (obj.IsNumber())
-            {
-                return "number";
-            }
-            else if (obj.IsString())
-            {
-                return "string";
-            }
 
-            return "unknown";
+
+            return string.Empty;
         }
 
 
@@ -346,37 +348,41 @@ namespace PDFEditor
         {
             foreach (var item in lstSelectedImages.SelectedItems)
             {
-                var obj = item as PdfObject;
-                if (obj != null && obj.IsStream())
+                if (item is KeyValuePair<string, object>)
                 {
-                    var stream = (PRStream)obj;
-                    byte[] b;
-                    try
+                    var thisItem = (KeyValuePair<string, object>)item;
+                    var obj = thisItem.Value as PdfObject;
+                    if (obj != null && obj.IsStream())
                     {
-                        b = PdfReader.GetStreamBytes(stream);
-                    }
-                    catch (Exception ex1)
-                    {
-                        b = PdfReader.GetStreamBytesRaw(stream);
-                    }
+                        var stream = (PRStream)obj;
+                        byte[] b;
+                        try
+                        {
+                            b = PdfReader.GetStreamBytes(stream);
+                        }
+                        catch (Exception ex1)
+                        {
+                            b = PdfReader.GetStreamBytesRaw(stream);
+                        }
 
-                    var bytes = b;
-                    try
-                    {
-                        var pdfImage = new PdfImageObject(stream);
-                        picImage.Image = pdfImage.GetDrawingImage();
-                        picImage.Image.Save(Path.GetDirectoryName(fileName) + "\\output\\" + DateTime.Now.Ticks.ToString() + "." + pdfImage.GetFileType());
-                        PdfImage image = new PdfImage(MakeBlankImg(), "", null);
-                        ReplaceStream(stream, image);
-                    }
-                    catch (Exception ex)
-                    {
-                        tsMessage.Text = ex.Message;
+                        var bytes = b;
+                        try
+                        {
+                            var pdfImage = new PdfImageObject(stream);
+                            picImage.Image = pdfImage.GetDrawingImage();
+                            picImage.Image.Save(Path.GetDirectoryName(fileName) + "\\output\\" + DateTime.Now.Ticks.ToString() + "." + pdfImage.GetFileType());
+                            PdfImage image = new PdfImage(MakeBlankImg(), "", null);
+                            ReplaceStream(stream, image);
+                        }
+                        catch (Exception ex)
+                        {
+                            tsMessage.Text = ex.Message;
+                        }
                     }
                 }
+                SaveReaderToOutput();
             }
 
-            SaveReaderToOutput();
         }
 
         public static iTextSharp.text.Image MakeBlankImg()
@@ -434,11 +440,85 @@ namespace PDFEditor
 
                 }
             }
+
+            if (dffOpenOutputInAdobe.Checked)
+                Process.Start(outfileName);
         }
 
         private void tvDOM_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             lstSelectedImages.Items.Add(e.Node.Tag);
+        }
+
+        private void btnRemoveUnused_Click(object sender, EventArgs e)
+        {
+            _reader.RemoveUnusedObjects();
+            //_reader.RemoveAnnotations(); 
+            _reader.RemoveUsageRights();
+
+            Dictionary<string, string> info = _reader.Info;
+            for (int i = 0 ; i < info.Count; i++)
+            {
+                info[info.Keys.Skip(i).First()] = "";
+            }
+
+            info["Creator"] = "HajOnSoft";
+            var sourceFolder = Path.GetDirectoryName(fileName);
+            if (!Directory.Exists(sourceFolder + "\\Output"))
+                Directory.CreateDirectory(sourceFolder + "\\Output");
+
+            var outfileName = sourceFolder + "\\Output\\" + Path.GetFileName(fileName);
+
+
+            using (FileStream fs = new FileStream(outfileName, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                using (PdfStamper stamper = new PdfStamper(_reader, fs))
+                {
+                    stamper.MoreInfo = info;
+                }
+            }
+
+            if (dffOpenOutputInAdobe.Checked)
+                Process.Start(outfileName);
+        }
+
+        private void btnMarkForDeletion_Click(object sender, EventArgs e)
+        {
+            var selectedImage = new KeyValuePair<string, object>(tvDOM.SelectedNode.Text, tvDOM.SelectedNode.Tag);
+            lstSelectedImages.Items.Add(selectedImage);
+        }
+
+        private void btnTruncateStream_Click(object sender, EventArgs e)
+        {
+            var obj = tvDOM.SelectedNode.Tag as PdfObject;
+            if (obj != null && obj.IsStream())
+            {
+                var stream = (PRStream)obj;
+                byte[] b;
+                try
+                {
+                    b = PdfReader.GetStreamBytes(stream);
+                }
+                catch (Exception ex1)
+                {
+                    b = PdfReader.GetStreamBytesRaw(stream);
+                }
+
+                var bytes = b;
+
+                try
+                {
+
+                        var contentAsString = Encoding.UTF8.GetString(PdfReader.GetStreamBytes(stream));
+                        dfsPdfText.Text = contentAsString;
+                        stream.SetData(new byte[0]);
+                    
+                }
+                catch (Exception ex)
+                {
+                    tsMessage.Text = ex.Message;
+                }
+            }
         }
     }
 }
